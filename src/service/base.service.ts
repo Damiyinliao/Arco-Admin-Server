@@ -1,38 +1,81 @@
-import { Provide } from "@midwayjs/core";
-import { Repository } from "typeorm";
+import { Inject } from "@midwayjs/decorator";
+import { Context } from "@midwayjs/koa";
+import { Repository, FindOptionsWhere } from "typeorm";
 import { BaseEntity } from "../entity/base.entity";
 
-@Provide()
+
 export abstract class BaseService<T extends BaseEntity> {
-  public abstract entity: Repository<T>
+  @Inject()
+  ctx: Context;
 
-  add(query: any) {
-    return this.entity.save(query)
+  public abstract getModel(): Repository<T>
+
+  /**
+   * @description 创建
+   * @param entity
+   * @returns
+   */
+  async create(entity: T) {
+    return await this.getModel().save(entity)
   }
 
-  update(query: any) {
-    return this.entity.update(query.id, query)
+  /**
+   * @description 更新
+   * @param entity
+   * @returns
+   */
+  async update(entity: T) {
+    return await this.getModel().save(entity)
   }
 
-  delete(ids: number | number[] | string | string[]) {
-    return this.entity.delete(ids)
+  /**
+   * @description 删除
+   * @param ids
+   * @returns
+   */
+  async delete(ids: number | number[] | string | string[]) {
+    return await this.getModel().delete(ids)
   }
 
-  info(data: any) {
-    return this.entity.findOne({ where: data })
+  /**
+   * @description 根据id查询
+   * @param id
+   * @returns
+   */
+  async getById(id: string): Promise<T> {
+    return await this.getModel().createQueryBuilder().where('model.id = :id', { id }).getOne()
   }
 
-  async page(data) {
-    const { page = 1, size = 10 } = data;
-    const [list, total] = await this.entity.findAndCount({
-      where: {},
-      take: size,
-      skip: (page - 1) * size
+  /**
+   * @description 分页查询
+   * @param page
+   * @param size
+   * @param where
+   * @returns
+   */
+  async page(page: number, size: number, where?: FindOptionsWhere<T>) {
+    const order: any = { createTime: 'desc' };
+
+    const [list, total] = await this.getModel().findAndCount({
+      where,  // 查询条件
+      order,  // 排序
+      take: size, // 每页多少条
+      skip: (page-1) * size // 跳过多少条
     })
-    return { list, pagination: { total, size, page } }
+    return { list, total }
   }
 
-  list(data?: any) {
-    return this.entity.find({ where: data } as any)
+  /**
+   * @description 查询所有
+   * @param where
+   * @returns
+   */
+  async list(where?: FindOptionsWhere<T>) {
+    const order: any = { createTime: 'desc' };
+    const data = await this.getModel().find({
+      where,  // 查询条件
+      order,  // 排序
+    })
+    return data
   }
 }
