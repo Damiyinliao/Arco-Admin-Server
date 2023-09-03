@@ -5,5 +5,9 @@
     "jest": true
   },
   "no-unused-vars": "off",
-  "@typescript-eslint/no-unused-vars": ["error"]
+  "@typescript-eslint/no-unused-vars": ["error"],
+  // 带分号
+  "semi": ["error", "always"],
+  // 每行不超过100个字符
+  "max-len": ["error", { "code": 100 }]
 }
