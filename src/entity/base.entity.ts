@@ -1,9 +1,9 @@
 import { PrimaryGeneratedColumn, Entity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity('role')
+
 export class BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn() // 自增长列
+  id?: string;
 
   @CreateDateColumn({ comment: '创建时间', type: 'timestamp' })
   createTime: Date
