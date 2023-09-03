@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Body } from '@midwayjs/core';
+import { Controller, Get, Post, Inject, Body } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { User } from '../entity/user.entity';
 import { Repository } from 'typeorm';
@@ -7,6 +7,7 @@ import { MidwayI18nService } from '@midwayjs/i18n';
 import { UserDTO } from '../dto/user.dto';
 import { CommonError } from '../common/common.error';
 import { ILogger } from '@midwayjs/logger';
+import { R } from '../common/base.error.util';
 
 @Controller('/')
 export class HomeController {
@@ -25,9 +26,16 @@ export class HomeController {
   @Inject()
   logger: ILogger;
 
-  @Get('/')
-  async home(@Body() user: UserDTO): Promise<void> {
-    this.logger.info('hello');
-    console.log(user)
+  // @Get('/')
+  // async home(@Body() user: UserDTO): Promise<void> {
+  //   this.logger.info('hello');
+  //   console.log(user)
+  // }
+
+  @Post('/')
+  async home(): Promise<void> {
+    // this.logger.info('hello');
+    // console.log(user)
+    throw R.error('error');
   }
 }

@@ -10,35 +10,13 @@ export class UserController {
   @Inject()
   userService: UserService;
 
-  @Post('/')
-  @Validate()
-  async create(@Body(ALL) data: UserDTO) {
-    const user = new User();
-    user.name = data.name;
-    user.age = data.age;
-    user.description = data.description;
-    return await this.userService.create(user);
-  }
-
-  @Put('/')
-  @Validate()
-  async update(@Body(ALL) data: UserDTO) {
-    const user = new User();
-    user.id = data.id;
-    user.name = data.name;
-    user.age = data.age;
-    return await this.userService.update(user);
-  }
-
   @Del('/:id')
-  async delete(id: number) {
-    const user = new User();
-    user.id = id;
-    return await this.userService.delete(user);
+  async delete(id: string) {
+    return await this.userService.delete(id);
   }
 
   @Get('/:id')
-  async getById(@Param('id') id: number) {
+  async getById(@Param('id') id: string) {
     return await this.userService.getById(id);
   }
 
