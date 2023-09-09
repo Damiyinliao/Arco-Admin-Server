@@ -17,6 +17,7 @@
     "@midwayjs/typeorm": "3",
     "@midwayjs/validate": "^3.12.3",
     "mysql2": "^3.6.0",
+    "nanoid": "^4.0.2",
     "typeorm": "^0.3.17"
   },
   "devDependencies": {
