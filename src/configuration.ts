@@ -5,14 +5,14 @@ import * as info from '@midwayjs/info';
 
 import * as orm from '@midwayjs/typeorm';
 import * as redis from '@midwayjs/redis';
-import * as swagger from '@midwayjs/swagger';
+// import * as swagger from '@midwayjs/swagger';
 import * as i18n from '@midwayjs/i18n';
 import { join } from 'path';
 // import { DefaultErrorFilter } from './filter/default.filter';
-// import { NotFoundFilter } from './filter/notfound.filter';
 import { ReportMiddleware } from './middleware/report.middleware';
 import { ValidateErrorFilter } from './filter/validate.filter';
 import { CommonErrorFilter } from './filter/common.filter'
+import { NotFoundFilter } from './filter/notfound.filter';
 
 @Configuration({
   imports: [
@@ -40,6 +40,11 @@ export class ContainerLifeCycle {
     // add middleware
     this.app.useMiddleware([ReportMiddleware]);
     // add filter 注册过滤器
-    this.app.useFilter([ValidateErrorFilter, CommonErrorFilter]);
+    this.app.useFilter([
+      ValidateErrorFilter,
+      CommonErrorFilter,
+      NotFoundFilter,
+      // UnauthorizedErrorFilter // TODO 未授权
+    ]);
   }
 }
