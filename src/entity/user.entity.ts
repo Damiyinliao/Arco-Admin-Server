@@ -4,7 +4,10 @@ import { BaseEntity } from './base.entity';
 export class User extends BaseEntity {
 
   @Column({ length: 50, comment: '姓名' }) // 长度为50的字符串列
-  name: string;
+  username: string;
+
+  @Column({ length: 50, comment: '密码' }) // 长度为50的字符串列
+  password: string;
 
   @Column({ comment: '描述' }) // text列
   description: string;

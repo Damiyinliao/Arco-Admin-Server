@@ -12,6 +12,7 @@ export class AuthController {
   @Post('/login', { description: '登录' })
   @NotLogin()
   async login(@Body(ALL) loginDTO: LoginDTO) {
+    // console.log('loginDTO', loginDTO);
     return await this.authService.login(loginDTO);
   }
 

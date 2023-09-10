@@ -1,18 +1,20 @@
-import { Config, Inject } from '@midwayjs/decorator';
+import { Config, Inject, Provide } from '@midwayjs/decorator';
 import { RedisService } from '@midwayjs/redis';
 import { R } from '../../../common/base.error.util';
 import { uuid } from '../../../utils/uuid';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { UserEntity } from '../../user/entity/user';
+// import { UserEntity } from '../../user/entity/user';
+import { User } from '../../../entity/user.entity';
 import { Repository } from 'typeorm';
 import { TokenConfig } from '../../../interface';
 import { Context } from 'koa';
 import { LoginDTO } from '../dto/login';
 import { TokenVO } from '../vo/token';
 
+@Provide()
 export class AuthService {
-  @InjectEntityModel(UserEntity)
-  userModel: Repository<UserEntity>; // 用户模型
+  @InjectEntityModel(User)
+  userModel: Repository<User>; // 用户模型
   @Inject()
   redisService: RedisService; // redis服务
   @Config()
@@ -20,22 +22,38 @@ export class AuthService {
   @Inject()
   ctx: Context; // 上下文
 
-  async login(loginDTO: LoginDTO): Promise<TokenVO> {
+  async login(loginDTO: LoginDTO): Promise<any> {
     try {
-      const { account, password } = loginDTO;
+      const { username, password } = loginDTO;
+
+      console.log('username', username, password);
       const user = await this.userModel
         .createQueryBuilder('user')
-        .where('user.account = :account', { account })
-        .select(['user.id', 'user.account', 'user.password'])
+        .where('user.username = :username', { username })
+        .select(['user.id', 'user.username', 'user.password'])
         .getOne();
 
         if (!user) {
-          throw R.error('用户名或密码错误');
+          throw R.error('用户名不存在');
+        }
+
+        if (user.password !== password) {
+          throw R.error('密码错误');
         }
 
         const { expire, refreshExpire } = this.tokenConfig;
         const token = uuid();
         const refreshToken = uuid();
+
+        await this.redisService
+          .multi()
+          .set(`token:${token}`, JSON.stringify({ userId: user.id, refreshToken })) // 存储token
+          .expire(`token:${token}`, expire) // 设置过期时间
+          .set(`refreshToken:${refreshToken}`, user.id) // 存储refreshToken
+          .expire(`refreshToken:${refreshToken}`, refreshExpire) // 设置过期时间
+          .sadd(`userToken_${user.id}`, token) // 存储用户token
+          .sadd(`userRefreshToken_${user.id}`, refreshToken) // 存储用户refreshToken
+          .exec(); // 执行
 
         return {
           expire,
