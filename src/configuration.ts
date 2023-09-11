@@ -2,7 +2,7 @@ import { Configuration, App } from '@midwayjs/core';
 import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
 import * as info from '@midwayjs/info';
-
+import * as cache from '@midwayjs/cache';
 import * as orm from '@midwayjs/typeorm';
 import * as redis from '@midwayjs/redis';
 // import * as swagger from '@midwayjs/swagger';
@@ -25,6 +25,7 @@ import { NotFoundFilter } from './filter/notfound.filter';
     //   component: swagger, // swagger展示没有配置成功 未知原因
     //   enabledEnvironment: ['local']
     // },
+    cache, // 缓存
     {
       component: info,
       enabledEnvironment: ['local'],

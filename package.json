@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@midwayjs/bootstrap": "^3.12.3",
+    "@midwayjs/cache": "3.12.3",
     "@midwayjs/core": "^3.12.3",
     "@midwayjs/decorator": "^3.12.3",
     "@midwayjs/i18n": "^3.12.3",
@@ -16,8 +17,10 @@
     "@midwayjs/swagger": "^3.12.3",
     "@midwayjs/typeorm": "^3.12.3",
     "@midwayjs/validate": "^3.12.3",
+    "mini-svg-data-uri": "^1.4.4",
     "mysql2": "^3.6.0",
     "nanoid": "^3.3.6",
+    "svg-captcha": "^1.4.0",
     "typeorm": "^0.3.17"
   },
   "devDependencies": {
